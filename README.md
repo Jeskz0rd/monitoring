@@ -53,6 +53,20 @@ cd monitoring
 
 ##  Netdata Installation steps
 
+Since version [1.1](https://github.com/Jeskz0rd/monitoring/blob/master/CHANGELOG.md#11---06-07-2018) You can use Netdata as a Container running with the stack as global mode, exposing metrics from all your cluster straight to prometheus.
+
+As described by [titpetric](https://github.com/titpetric) in [additional-notes](https://github.com/titpetric/netdata#additional-notes)
+
+```
+You will not get detailed application metrics (mysql, ups, etc.) from other containers or from the 
+host if running netdata in a container.
+It may be possible to get some of those metrics, but it might not be easy, and most likely not worth it.
+For most detailed metrics, netdata needs to share the same environment as the application server
+it monitors. This means it would need to run either in the same container (not even remotely practical),
+or in the same virtual machine (no containers).
+```
+If you do not intend to collect this kind of metrics through Netdata the containerized application fulfil the requirements and automates the deployment over your cluster, otherwise follow the steps bellow.
+
 [Install Netdata](https://github.com/firehol/netdata/#installation):
 ```
 # bash <(curl -Ss https://my-netdata.io/kickstart.sh) all
@@ -125,6 +139,7 @@ ID                  NAME                     MODE                REPLICAS       
 ypjvzrdzs760        monitoring_alertmanager    replicated          1/1                 jesk/alertmanager_alpine:1.0    *:9093->9093/tcp
 nnpqv7k297g4        monitoring_cadvisor        global              1/1                 google/cadvisor:v0.30.0         *:8080->8080/tcp
 gpn2qklfmra6        monitoring_grafana         replicated          1/1                 grafana/grafana:5.1.3           *:3000->3000/tcp
+7xgth29zggfb        monitoring_netdata         global              1/1                 firehol/netdata:alpine          *:19999->19999/tcp
 31q4t856ciua        monitoring_node-exporter   global              1/1                 jesk/node-exporter_alpine:1.0   *:9100->9100/tcp
 z2jd4eprumd8        monitoring_prometheus      replicated          1/1                 jesk/prometheus_alpine:1.0      *:9090->9090/tcp
 ```
