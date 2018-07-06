@@ -41,14 +41,14 @@ scrape_configs:
 
 ###########  NETDATA  ##############
 
-  - job_name: 'netdata_monitoring'
+  - job_name: 'netdata'
     metrics_path: '/api/v1/allmetrics'
     params:
       format: [prometheus]
     honor_labels: true
     scrape_interval: 20s
     static_configs:
-         - targets: ['192.168.1.49:19999']
+         - targets: ['monitoring_netdata:19999']
 
 ####################################
 
