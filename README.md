@@ -19,6 +19,8 @@ This stack is composed by:
 `Alerting` - Handle alerts sent by Prometheus
 - [Slack](https://slack.com/)
 `Communications` - Easy integration between your teammates
+- [BlackBox Exporter](https://github.com/prometheus/blackbox_exporter)
+`Endpoint Probes` - Probing of multiple endpoints over HTTP, HTTPS, DNS, TCP and ICMP
 
 # Requirements
 
@@ -26,7 +28,7 @@ To execute the steps bellow the following are necessary:
 
  - Docker in [Swarm](https://docs.docker.com/engine/swarm/) mode
 
-You can simply run the followin to start your standalone [swarm cluster](https://docs.docker.com/engine/swarm/swarm-tutorial/create-swarm/):
+You can simply run the following to start your standalone [swarm cluster](https://docs.docker.com/engine/swarm/swarm-tutorial/create-swarm/):
 
 ```
 $ docker swarm init --advertise-addr 192.168.99.100
@@ -125,6 +127,32 @@ exit
 
 it takes a while changing the permissions...
 
+### Setup HTTP monitoring with Blackbox
+
+Configure Prometheus to scrape http.
+
+Add your http targets in the [prometheus.yml](conf/prometheus/prometheus.yml)
+
+```
+####### BLACKBOX MONITORING ########
+
+  - job_name: 'blackbox'
+    params:
+      module:
+      - http_2xx
+    scrape_interval: 30s
+    scrape_timeout: 10s
+    metrics_path: /probe
+    scheme: http
+    static_configs:
+      - targets:
+        - http://example.com
+        - http://www.example.com
+        - http://your.web.app
+        - http://your.web.app/check
+    ...
+```
+
 ### Deploy the stack
 
 ```
@@ -135,13 +163,14 @@ Check deployed services:
 ```
 # docker service ls
 
-ID                  NAME                     MODE                REPLICAS            IMAGE                                   PORTS
-ypjvzrdzs760        monitoring_alertmanager    replicated          1/1                 jesk/alertmanager_alpine:1.0    *:9093->9093/tcp
-nnpqv7k297g4        monitoring_cadvisor        global              1/1                 google/cadvisor:v0.30.0         *:8080->8080/tcp
-gpn2qklfmra6        monitoring_grafana         replicated          1/1                 grafana/grafana:5.1.3           *:3000->3000/tcp
-7xgth29zggfb        monitoring_netdata         global              1/1                 firehol/netdata:alpine          *:19999->19999/tcp
-31q4t856ciua        monitoring_node-exporter   global              1/1                 jesk/node-exporter_alpine:1.0   *:9100->9100/tcp
-z2jd4eprumd8        monitoring_prometheus      replicated          1/1                 jesk/prometheus_alpine:1.0      *:9090->9090/tcp
+ID                  NAME                           MODE                REPLICAS            IMAGE                           PORTS
+ypjvzrdzs760        monitoring_alertmanager        replicated          1/1                 jesk/alertmanager_alpine:1.0    *:9093->9093/tcp
+x54ardi5blgn        monitoring_blackbox-exporter   global              1/1                 prom/blackbox-exporter:v0.12.0  *:9115->9115/tcp
+nnpqv7k297g4        monitoring_cadvisor            global              1/1                 google/cadvisor:v0.30.0         *:8080->8080/tcp
+gpn2qklfmra6        monitoring_grafana             replicated          1/1                 grafana/grafana:5.1.3           *:3000->3000/tcp
+7xgth29zggfb        monitoring_netdata             global              1/1                 firehol/netdata:alpine          *:19999->19999/tcp
+31q4t856ciua        monitoring_node-exporter       global              1/1                 jesk/node-exporter_alpine:1.0   *:9100->9100/tcp
+z2jd4eprumd8        monitoring_prometheus          replicated          1/1                 jesk/prometheus_alpine:1.0      *:9090->9090/tcp
 ```
 
 Accessing Prometheus interface on browser:
@@ -170,6 +199,12 @@ Accessing Node_exporter metrics on browser:
 ```
 http://YOUR_HOST_IP:9100/metrics
 ```
+
+Accessing Blackbox_exporter on browser:
+```
+http://YOUR_HOST_IP:9115
+```
+
 
 Create a channel and add the [API](https://get.slack.help/hc/en-us/articles/215770388-Create-and-regenerate-API-tokens) information about your [Slack account](https://api.slack.com/tokens)
 
