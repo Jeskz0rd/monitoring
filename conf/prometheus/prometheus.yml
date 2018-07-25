@@ -52,6 +52,42 @@ scrape_configs:
 
 ####################################
 
+####### BLACKBOX MONITORING ########
+
+  - job_name: 'blackbox'
+    params:
+      module:
+      - http_2xx
+    scrape_interval: 30s
+    scrape_timeout: 10s
+    metrics_path: /probe
+    scheme: http
+    static_configs:
+      - targets:
+        - http://example.com
+        - http://www.example.com
+        - http://your.web.app
+        - http://your.web.app/check
+    relabel_configs:
+      - source_labels: [__address__]
+        separator: ';'
+        regex: '(.*)'
+        target_label: __param_target
+        replacement: $1
+        action: replace
+
+      - source_labels: [__param_target]
+        separator: ';'
+        regex: (.*)
+        target_label: instance
+        replacement: $1
+        action: replace
+
+      - target_label: __address__
+        replacement: blackbox-exporter:9115  # The blackbox exporter's real hostname:port.
+
+####################################
+
 ######## MYSQL MONITORING ##########
 
 #  - job_name: 'database_prod'

@@ -115,6 +115,21 @@ services:
         limits:
           memory: 128M
 
+  blackbox-exporter:
+    image: prom/blackbox-exporter:v0.12.0
+    hostname: '{{.Node.ID}}'
+    volumes:
+      - ~/monitoring/conf/blackbox/config.yml:/etc/blackbox_exporter/config.yml
+    networks:
+      - backend
+    ports:
+      - 9115:9115
+    deploy:
+      mode: global
+      resources:
+        limits:
+          memory: 32M
+
 networks:
   frontend:
   backend:
