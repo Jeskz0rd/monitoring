@@ -31,17 +31,18 @@ To execute the steps bellow the following are necessary:
 You can simply run the following to start your standalone [swarm cluster](https://docs.docker.com/engine/swarm/swarm-tutorial/create-swarm/):
 
 ```
-$ docker swarm init --advertise-addr 192.168.99.100
+$ docker swarm init --advertise-addr YOUR_HOST_IP_HERE
 Swarm initialized: current node (dxn1zf6l61qsb1josjja83ngz) is now a manager.
 
 To add a worker to this swarm, run the following command:
 
     docker swarm join \
     --token SWMTKN-1-49nj1cmql0jkz5s954yi3oex3nedyz0fb0xx14ie39trti4wxv-8vxv8rssmk743ojnwacrr2e7c \
-    192.168.99.100:2377
+    YOUR_HOST_IP_HERE:2377
 
 To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
 ```
+Do not forget to replace "YOUR_HOST_IP_HERE" ;)
 
 # Setup
 
