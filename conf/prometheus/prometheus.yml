@@ -52,6 +52,15 @@ scrape_configs:
 
 ####################################
 
+##########  MEMCACHED  #############
+
+  # - job_name: 'memcached'
+  #   scrape_interval: 20s
+  #   static_configs:
+  #        - targets: ['monitoring_memcached-exporter:9150']
+
+####################################
+
 ####### BLACKBOX MONITORING ########
 
   - job_name: 'blackbox'
