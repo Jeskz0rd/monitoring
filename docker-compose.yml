@@ -130,6 +130,22 @@ services:
         limits:
           memory: 32M
 
+  # memcached-exporter:
+  #   image: jesk/memcached_exporter:1.0
+  #   hostname: '{{.Node.ID}}'
+  #   networks:
+  #     - backend
+  #   ports:
+  #     - 9150:9150
+  #   environment:
+  #     MEMCACHED_HOST: "YOUR_MEMCACHED_IP_HERE"
+  #     MEMCACHED_PORT: "11211"
+  #   deploy:
+  #     replicas: 1
+  #     resources:
+  #       limits:
+  #         memory: 32M
+
 networks:
   frontend:
   backend:
