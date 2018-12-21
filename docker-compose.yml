@@ -38,7 +38,7 @@ services:
         limits:
           memory: 32M
 
-  netdata-exporter:
+  netdata:
     image: firehol/netdata:alpine
     hostname: '{{.Node.ID}}'
     volumes:
