@@ -73,7 +73,7 @@ services:
           memory: 32M
 
   cadvisor:
-    image: google/cadvisor:v0.30.0
+    image: google/cadvisor:v0.31.0
     hostname: '{{.Node.ID}}'
     volumes:
       - /:/rootfs:ro
